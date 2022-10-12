@@ -2,25 +2,7 @@ import Link from "next/link";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-
-const schema = z.object({
-  username: z
-    .string()
-    .min(4, { message: "Please provide valid name: 4 character min" }),
-  useremail: z
-    .string()
-    .email()
-    .min(6, { message: "provide valid email address" }),
-  userpassword: z
-    .string()
-    .min(4, "Password length should be at least 4 characters")
-    .max(12, "Password cannot exceed more than 12 characters"),
-  confirm_password: z
-    .string()
-    .min(4, "Password length should be at least 4 characters")
-    .max(12, "Password cannot exceed more than 12 characters"),
-});
+import { RegisterUserSchema } from "../../validation/registerUserSchema";
 
 function SingUPComponent() {
   const {
@@ -29,18 +11,18 @@ function SingUPComponent() {
     watch,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(RegisterUserSchema),
   });
   const onSubmit = (data: unknown) => {
     console.log(data);
   };
 
-  console.log(watch("example")); // watch input value by passing the name of it
+  console.log(watch("useremail")); // watch input value by passing the name of it
 
   return (
     <>
       <div className="flex min-h-screen items-center justify-center bg-gray-100">
-        <div className="mx-4 mt-4 bg-white px-8 py-6 text-left shadow-lg sm:w-1/3 md:w-1/3 lg:w-1/3">
+        <div className="mx-2 mt-4 bg-white px-8 py-8 text-left shadow-lg sm:w-1/2 md:w-1/3 lg:w-1/3">
           <h3 className="text-center text-2xl font-bold">Join us</h3>
           <form action="" onSubmit={handleSubmit(onSubmit)}>
             <div className="mt-4">
@@ -50,10 +32,7 @@ function SingUPComponent() {
                   type="text"
                   placeholder="Name"
                   className="mt-2 w-full rounded-md border px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-600"
-                  {...register("username", {
-                    required: "Please provide valid name",
-                    maxLength: 20,
-                  })}
+                  {...register("username")}
                 />
                 {errors.username && (
                   <span className="text-xs text-red-400">
@@ -69,14 +48,28 @@ function SingUPComponent() {
                 type="text"
                 placeholder="Email"
                 className="mt-2 w-full rounded-md border px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-600"
-                {...register("useremail", {
-                  required: "Email Address is required",
-                })}
+                {...register("useremail")}
                 aria-invalid={errors.useremail ? "true" : "false"}
               />
               {errors.useremail && (
                 <span className="text-xs text-red-400">
                   {errors.useremail?.message as string}
+                </span>
+              )}
+            </div>
+
+            <div className="mt-4">
+              <label className="block">Phone Number</label>
+              <input
+                type="text"
+                placeholder="92xxxxxxxxxx"
+                className="mt-2 w-full rounded-md border px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-600"
+                {...register("phone")}
+                aria-invalid={errors.phone ? "true" : "false"}
+              />
+              {errors.phone && (
+                <span className="text-xs text-red-400">
+                  {errors.phone?.message as string}
                 </span>
               )}
             </div>
@@ -86,9 +79,7 @@ function SingUPComponent() {
                 type="password"
                 placeholder="Password"
                 className="mt-2 w-full rounded-md border px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-600"
-                {...register("userpassword", {
-                  required: "Enter valid password",
-                })}
+                {...register("userpassword")}
                 aria-invalid={errors.userpassword ? "true" : "false"}
               />
               {errors.userpassword && (
