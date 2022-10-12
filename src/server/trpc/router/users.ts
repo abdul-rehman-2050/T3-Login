@@ -3,7 +3,6 @@ import { z } from "zod";
 
 
 interface User {
-    id: string;
     name: string;
     email: string;
     phone: number;
@@ -12,7 +11,6 @@ interface User {
 
 const userList: User[] = [
     {
-        id:"3",
         name:"test user",
         email: "test@gmail.com",
         phone: 23423232,
@@ -30,28 +28,28 @@ export const usersRouter = t.router({
       const { input } = req;
                
       //const user = ctx.prisma.example.findMany()
-      const user = userList.find((u) => u.id === input);
+     // const user = userList.find((u) => u.id === input);
        
-      return user;
+      //return user;
+      return {name:"test"}
     }),
     create: t.procedure
     .input(z.object({ name: z.string(),email: z.string(),phone:z.number(),password:z.string(),confirm_password:z.string() }))
     .mutation(async ({ input, ctx }) => {
-      const id = `${Math.random()}`;
+      
       const user: User = {
-        id,
         name: input.name,
         email: input.email,
         phone: input.phone,
         password: input.password
 
       };
-      await ctx.prisma.user
+      const v = await ctx.prisma.user
       .create({data:user})
-      .catch(() => ({}));
+      
 
-      userList.push(user);
-      return user;
+      
+      return v;
     }),
 
    
