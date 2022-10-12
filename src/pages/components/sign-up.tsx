@@ -1,8 +1,9 @@
 import Link from "next/link";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler,useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RegisterUserSchema } from "../../validation/registerUserSchema";
+import { RegisterUserSchema, RegisterUserSchemaType} from "../../validation/registerUserSchema";
+import { trpc } from "../../utils/trpc";
 
 function SingUPComponent() {
   const {
@@ -10,14 +11,17 @@ function SingUPComponent() {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm({
+  } = useForm<RegisterUserSchemaType>({
+    
     resolver: zodResolver(RegisterUserSchema),
   });
-  const onSubmit = (data: unknown) => {
+  const onSubmit : SubmitHandler<RegisterUserSchemaType> = (data) =>{
+    console.log("testing")
     console.log(data);
+   // trpc.users.userCreate.useMutation<RegisterUserSchemaType>(data)
   };
 
-  console.log(watch("useremail")); // watch input value by passing the name of it
+  console.log(watch("email")); // watch input value by passing the name of it
 
   return (
     <>
@@ -32,11 +36,11 @@ function SingUPComponent() {
                   type="text"
                   placeholder="Name"
                   className="mt-2 w-full rounded-md border px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-600"
-                  {...register("username")}
+                  {...register("name")}
                 />
-                {errors.username && (
+                {errors.name && (
                   <span className="text-xs text-red-400">
-                    {errors.username?.message as string}
+                    {errors.name?.message as string}
                   </span>
                 )}
               </div>
@@ -48,12 +52,12 @@ function SingUPComponent() {
                 type="text"
                 placeholder="Email"
                 className="mt-2 w-full rounded-md border px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-600"
-                {...register("useremail")}
-                aria-invalid={errors.useremail ? "true" : "false"}
+                {...register("email")}
+                aria-invalid={errors.email ? "true" : "false"}
               />
-              {errors.useremail && (
+              {errors.email && (
                 <span className="text-xs text-red-400">
-                  {errors.useremail?.message as string}
+                  {errors.email?.message as string}
                 </span>
               )}
             </div>
@@ -79,12 +83,12 @@ function SingUPComponent() {
                 type="password"
                 placeholder="Password"
                 className="mt-2 w-full rounded-md border px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-600"
-                {...register("userpassword")}
-                aria-invalid={errors.userpassword ? "true" : "false"}
+                {...register("password")}
+                aria-invalid={errors.password ? "true" : "false"}
               />
-              {errors.userpassword && (
+              {errors.password && (
                 <span className="text-xs text-red-400">
-                  {errors.userpassword?.message as string}
+                  {errors.password?.message as string}
                 </span>
               )}
             </div>
@@ -95,14 +99,7 @@ function SingUPComponent() {
                 type="password"
                 placeholder="Password"
                 className="mt-2 w-full rounded-md border px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-600"
-                {...register("confirm_password", {
-                  required: "Password should match",
-                  validate: (val: string) => {
-                    if (watch("userpassword") != val) {
-                      return "Your passwords do no match";
-                    }
-                  },
-                })}
+                {...register("confirm_password")}
               />
               {errors.confirm_password && (
                 <span className="text-xs text-red-400">
@@ -112,7 +109,7 @@ function SingUPComponent() {
             </div>
 
             <div className="flex">
-              <button className="mt-4 w-full rounded-lg bg-blue-600 px-6 py-2 text-white hover:bg-blue-900">
+              <button type="submit" className="mt-4 w-full rounded-lg bg-blue-600 px-6 py-2 text-white hover:bg-blue-900">
                 Create Account
               </button>
             </div>

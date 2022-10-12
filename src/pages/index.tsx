@@ -1,12 +1,12 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { trpc } from "../utils/trpc";
+//import { trpc } from "../utils/trpc";
 import SingUPComponent from "./components/sign-up";
 
 const Home: NextPage = () => {
-  const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
-  const user =  trpc.users.userById.useQuery("3" );
+  //const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
+  //const user =  trpc.users.userById.useQuery("3" );
 
   return (
     <>
@@ -21,10 +21,10 @@ const Home: NextPage = () => {
         <AuthShowcase />
         <div>
         <pre>
-            {JSON.stringify(hello.data, null, 2)}
+            {/*JSON.stringify(hello.data, null, 2)*/}
           </pre>
           <pre>
-            {JSON.stringify(user.data, null, 2)}
+            {/*JSON.stringify(user.data, null, 2)*/}
           </pre>
         </div>
       </main>
