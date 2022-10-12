@@ -1,24 +1,29 @@
 import Link from "next/link";
 import React from "react";
-import { SubmitHandler,useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RegisterUserSchema, RegisterUserSchemaType} from "../../validation/registerUserSchema";
+import {
+  RegisterUserSchema,
+  RegisterUserSchemaType,
+} from "../../validation/registerUserSchema";
 import { trpc } from "../../utils/trpc";
 
+
+
 function SingUPComponent() {
-  const {
+    const mutation = trpc.users.create.useMutation();
+    const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<RegisterUserSchemaType>({
-    
     resolver: zodResolver(RegisterUserSchema),
   });
-  const onSubmit : SubmitHandler<RegisterUserSchemaType> = (data) =>{
-    console.log("testing")
+  const onSubmit: SubmitHandler<RegisterUserSchemaType> = (data) => {
+    console.log("testing");
     console.log(data);
-   // trpc.users.userCreate.useMutation<RegisterUserSchemaType>(data)
+    mutation.mutate(data);
   };
 
   console.log(watch("email")); // watch input value by passing the name of it
@@ -109,11 +114,17 @@ function SingUPComponent() {
             </div>
 
             <div className="flex">
-              <button type="submit" className="mt-4 w-full rounded-lg bg-blue-600 px-6 py-2 text-white hover:bg-blue-900">
+              <button
+                type="submit"
+                disabled={mutation.isLoading}
+                className="mt-4 w-full rounded-lg bg-blue-600 px-6 py-2 text-white hover:bg-blue-900"
+              >
                 Create Account
               </button>
             </div>
-
+            {mutation.error && (
+              <p>Something went wrong! {mutation.error.message}</p>
+            )}
             <div className="text-grey-dark mt-6">
               Already have an account?
               <Link className="text-blue-600 hover:underline" href="/">

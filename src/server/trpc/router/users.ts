@@ -36,20 +36,18 @@ export const usersRouter = t.router({
     }),
     create: t.procedure
     .input(z.object({ name: z.string(),email: z.string(),phone:z.number(),password:z.string(),confirm_password:z.string() }))
-    .mutation(async (req) => {
+    .mutation(async ({ input, ctx }) => {
       const id = `${Math.random()}`;
       const user: User = {
         id,
-        name: req.input.name,
-        email: req.input.email,
-        phone: req.input.phone,
-        password: req.input.password
+        name: input.name,
+        email: input.email,
+        phone: input.phone,
+        password: input.password
 
       };
-      await req.ctx.prisma.user
-      .create({
-        data: { user },
-      })
+      await ctx.prisma.user
+      .create({data:user})
       .catch(() => ({}));
 
       userList.push(user);
